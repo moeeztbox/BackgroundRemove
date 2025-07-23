@@ -1,4 +1,3 @@
-// components/editor/ImagePreview.jsx
 import { useImage } from "../../context/ImageContext";
 import { useEditor } from "../../context/EditorContext";
 

@@ -1,4 +1,3 @@
-// components/editor/EffectsPanel/BlurFullToggle.jsx
 import { useState } from "react";
 
 function BlurFullToggle() {

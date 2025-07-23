@@ -1,4 +1,3 @@
-// components/editor/EffectsPanel/RemoveBackgroundToggle.jsx
 import { useState } from "react";
 
 function RemoveBackgroundToggle() {

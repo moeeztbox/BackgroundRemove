@@ -1,4 +1,3 @@
-// components/editor/ActionPanel.jsx
 import { useEditor } from "../../context/EditorContext";
 
 function ActionPanel() {

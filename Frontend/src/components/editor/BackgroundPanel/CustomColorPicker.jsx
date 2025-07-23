@@ -1,4 +1,3 @@
-// components/editor/BackgroundPanel/CustomColorPicker.jsx
 function CustomColorPicker() {
   const handleChange = (e) => {
     console.log("Custom color selected:", e.target.value);

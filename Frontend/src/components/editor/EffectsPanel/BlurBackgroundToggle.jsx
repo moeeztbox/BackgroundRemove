@@ -1,4 +1,3 @@
-// components/editor/EffectsPanel/BlurBackgroundToggle.jsx
 import { useEditor } from "../../../context/EditorContext";
 
 function BlurBackgroundToggle() {

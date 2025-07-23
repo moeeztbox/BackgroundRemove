@@ -1,4 +1,3 @@
-// components/editor/EffectsPanel/BlurAmountSlider.jsx
 import { useEditor } from "../../../context/EditorContext";
 
 function BlurAmountSlider() {

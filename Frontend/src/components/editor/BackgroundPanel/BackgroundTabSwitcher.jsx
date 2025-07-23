@@ -1,4 +1,3 @@
-// components/editor/BackgroundPanel/BackgroundTabSwitcher.jsx
 import { useEditor } from "../../../context/EditorContext";
 
 export default function BackgroundTabSwitcher() {

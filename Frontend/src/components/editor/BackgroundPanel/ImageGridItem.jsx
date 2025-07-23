@@ -1,4 +1,3 @@
-// components/editor/BackgroundPanel/ImageGridItem.jsx
 function ImageGridItem({ src }) {
   return (
     <div className="aspect-square rounded-md overflow-hidden border border-amber-50 hover:border-blue-500 cursor-pointer">

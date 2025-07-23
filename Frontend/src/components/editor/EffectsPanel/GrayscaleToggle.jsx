@@ -1,12 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { useImage } from "../../../context/ImageContext";
-import { useEditor } from "../../../context/EditorContext"; // ✅
+import { useEditor } from "../../../context/EditorContext";
 
 function GrayscaleToggle() {
   const [enabled, setEnabled] = useState(false);
   const { imageFile } = useImage();
-  const { setEditedImageURL } = useEditor(); // ✅
+  const { setEditedImageURL } = useEditor();
 
   const applyGrayscale = async () => {
     const formData = new FormData();
@@ -14,7 +14,7 @@ function GrayscaleToggle() {
 
     try {
       const response = await axios.post(
-        "http://localhost/BACKGROUNDREMOVE/Backend/Routes.php?action=grayscale",
+        "http://localhost/BACKGROUNDREMOVE/Backend/Index.php?action=grayscale",
         formData,
         {
           responseType: "blob",
@@ -26,7 +26,7 @@ function GrayscaleToggle() {
 
       const blob = response.data;
       const grayscaleURL = URL.createObjectURL(blob);
-      setEditedImageURL(grayscaleURL); // ✅
+      setEditedImageURL(grayscaleURL);
     } catch (error) {
       console.error("Grayscale failed:", error);
       alert("Error applying grayscale");
@@ -36,7 +36,7 @@ function GrayscaleToggle() {
   const removeGrayscale = () => {
     if (imageFile) {
       const originalURL = URL.createObjectURL(imageFile);
-      setEditedImageURL(originalURL); // ✅
+      setEditedImageURL(originalURL);
     }
   };
 

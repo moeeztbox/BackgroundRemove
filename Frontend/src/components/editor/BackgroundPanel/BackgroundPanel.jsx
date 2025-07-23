@@ -1,4 +1,3 @@
-// components/editor/BackgroundPanel/BackgroundPanel.jsx
 import { useEditor } from "../../../context/EditorContext";
 import BackgroundTabSwitcher from "./BackgroundTabSwitcher";
 import PhotoTab from "./PhotoTab";

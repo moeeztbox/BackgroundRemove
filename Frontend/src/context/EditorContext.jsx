@@ -1,4 +1,3 @@
-// context/EditorContext.jsx
 import { createContext, useContext, useState } from "react";
 
 const EditorContext = createContext();
@@ -11,8 +10,6 @@ export const EditorProvider = ({ children }) => {
   const [bgTab, setBgTab] = useState("photo");
   const [isBlurBackgroundEnabled, setIsBlurBackgroundEnabled] = useState(false);
   const [customImages, setCustomImages] = useState([]);
-
-  // ✅ Add edited image state
   const [editedImageURL, setEditedImageURL] = useState(null);
 
   const toggleEffects = () => setIsEffectsOpen((prev) => !prev);

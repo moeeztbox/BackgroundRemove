@@ -1,4 +1,3 @@
-// pages/EditorPage.jsx
 import { useImage } from "../context/ImageContext";
 import { EditorProvider } from "../context/EditorContext";
 import ImagePreview from "../components/editor/ImagePreview";

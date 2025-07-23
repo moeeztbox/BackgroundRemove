@@ -1,4 +1,3 @@
-// components/editor/BackgroundPanel/ColorSwatch.jsx
 function ColorSwatch({ color }) {
   return (
     <div

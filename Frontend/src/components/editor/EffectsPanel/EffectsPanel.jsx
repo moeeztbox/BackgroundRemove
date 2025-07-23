@@ -1,4 +1,3 @@
-// components/editor/EffectsPanel/EffectsPanel.jsx
 import { useEditor } from "../../../context/EditorContext";
 import BlurBackgroundToggle from "./BlurBackgroundToggle";
 import BlurAmountSlider from "./BlurAmountSlider";
