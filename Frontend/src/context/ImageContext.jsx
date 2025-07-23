@@ -14,7 +14,9 @@ export const ImageProvider = ({ children }) => {
   };
 
   return (
-    <ImageContext.Provider value={{ imageURL, imageFile, handleImageUpload }}>
+    <ImageContext.Provider
+      value={{ imageURL, imageFile, handleImageUpload, setImageURL }}
+    >
       {children}
     </ImageContext.Provider>
   );
