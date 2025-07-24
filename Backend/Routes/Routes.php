@@ -1,20 +1,22 @@
 <?php
 
 function handleRequest($method, $action) {
-    $controller = new Controller();
+    try {
+        $controller = new Controller();
 
-    if ($method === 'POST') {
-        switch ($action) {
-            case 'grayscale':
-                $controller->GrayScale();
-                break;
-            default:
-                http_response_code(400);
-                echo 'Invalid action.';
-                break;
+        if ($method === 'POST') {
+            switch ($action) {
+                case 'grayscale':
+                    $controller->GrayScale();
+                    break;
+                default:
+                    Response::error('Invalid action.', 400);
+                    break;
+            }
+        } else {
+            Response::error('Only POST requests are allowed.', 400);
         }
-    } else {
-        http_response_code(405);
-        echo 'Only POST requests are allowed.';
+    } catch (Exception $e) {
+        Response::error('Server error: ' . $e->getMessage(), 500);
     }
 }

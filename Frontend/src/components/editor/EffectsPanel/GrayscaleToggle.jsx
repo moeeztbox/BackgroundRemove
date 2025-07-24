@@ -17,15 +17,12 @@ function GrayscaleToggle() {
         "http://localhost/BACKGROUNDREMOVE/Backend/Index.php?action=grayscale",
         formData,
         {
-          responseType: "blob",
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-
-      const blob = response.data;
-      const grayscaleURL = URL.createObjectURL(blob);
+      const grayscaleURL = response.data.data.imageUrl;
       setEditedImageURL(grayscaleURL);
     } catch (error) {
       console.error("Grayscale failed:", error);
