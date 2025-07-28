@@ -1,6 +1,11 @@
+import { useEditor } from "../../../context/EditorContext";
+
 function CustomColorPicker() {
+  const { selectedBgColor, toggleSelectedBgColor } = useEditor();
+
   const handleChange = (e) => {
-    console.log("Custom color selected:", e.target.value);
+    const selectedColor = e.target.value;
+    toggleSelectedBgColor(selectedColor);
   };
 
   return (
@@ -10,5 +15,4 @@ function CustomColorPicker() {
     </label>
   );
 }
-
 export default CustomColorPicker;

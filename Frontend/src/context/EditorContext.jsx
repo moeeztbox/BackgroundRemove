@@ -11,6 +11,11 @@ export const EditorProvider = ({ children }) => {
   const [isBlurBackgroundEnabled, setIsBlurBackgroundEnabled] = useState(false);
   const [customImages, setCustomImages] = useState([]);
   const [editedImageURL, setEditedImageURL] = useState(null);
+  const [selectedBgColor, setSelectedBgColor] = useState(null);
+
+  const toggleSelectedBgColor = (color) => {
+    setSelectedBgColor((prevColor) => (prevColor === color ? null : color));
+  };
 
   const toggleEffects = () => setIsEffectsOpen((prev) => !prev);
   const toggleBackground = () => setIsBackgroundOpen((prev) => !prev);
@@ -30,6 +35,9 @@ export const EditorProvider = ({ children }) => {
         setIsBlurBackgroundEnabled,
         customImages,
         setCustomImages,
+        selectedBgColor,
+        setSelectedBgColor,
+        toggleSelectedBgColor,
         editedImageURL,
         setEditedImageURL,
       }}
