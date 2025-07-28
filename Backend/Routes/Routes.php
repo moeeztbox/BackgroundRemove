@@ -9,6 +9,15 @@ function handleRequest($method, $action) {
                 case 'grayscale':
                     $controller->GrayScale();
                     break;
+                case 'full-blur-background':
+                    $controller->BlurBackground();
+                    break;
+                case 'remove-background':
+                    $controller->BackgroundRemove();
+                    break;
+                 case 'add-background-color':
+                    $controller->AddBackgroundColor(); // ✅ NEW
+                    break;    
                 default:
                     Response::error('Invalid action.', 400);
                     break;

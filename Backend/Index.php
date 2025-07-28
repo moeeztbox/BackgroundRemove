@@ -1,6 +1,6 @@
 <?php
 require_once 'Config/Settings.php'; 
-require_once 'Controller/GrayScale.php';            
+require_once 'Controller/Controller.php';            
 require_once 'Helpers/Response.php';
 require_once 'Helpers/Validation.php';
 require_once 'Routes/Routes.php';         
