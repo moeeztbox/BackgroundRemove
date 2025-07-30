@@ -12,12 +12,19 @@ function handleRequest($method, $action) {
                 case 'full-blur-background':
                     $controller->BlurBackground();
                     break;
+                case 'blur-background-level':
+                    $controller->BlurBackgroundLevel();
+                    break;
+
                 case 'remove-background':
                     $controller->BackgroundRemove();
                     break;
                  case 'add-background-color':
                     $controller->AddBackgroundColor(); // ✅ NEW
-                    break;    
+                    break;   
+                case 'add-background-photo':
+                    $controller->AddBackgroundPhoto();
+                    break;
                 default:
                     Response::error('Invalid action.', 400);
                     break;

@@ -6,12 +6,13 @@ export const useEditor = () => useContext(EditorContext);
 export const EditorProvider = ({ children }) => {
   const [isEffectsOpen, setIsEffectsOpen] = useState(false);
   const [isBackgroundOpen, setIsBackgroundOpen] = useState(false);
-  const [blurAmount, setBlurAmount] = useState(0);
+  const [blurAmount, setBlurAmount] = useState(10);
   const [bgTab, setBgTab] = useState("photo");
   const [isBlurBackgroundEnabled, setIsBlurBackgroundEnabled] = useState(false);
   const [customImages, setCustomImages] = useState([]);
   const [editedImageURL, setEditedImageURL] = useState(null);
   const [selectedBgColor, setSelectedBgColor] = useState(null);
+  const [selectedBgPhoto, setSelectedBgPhoto] = useState(null); // New state
 
   const toggleSelectedBgColor = (color) => {
     setSelectedBgColor((prevColor) => (prevColor === color ? null : color));
@@ -37,6 +38,8 @@ export const EditorProvider = ({ children }) => {
         setCustomImages,
         selectedBgColor,
         setSelectedBgColor,
+        selectedBgPhoto,
+        setSelectedBgPhoto,
         toggleSelectedBgColor,
         editedImageURL,
         setEditedImageURL,

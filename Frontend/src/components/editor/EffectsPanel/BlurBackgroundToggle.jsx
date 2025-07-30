@@ -1,7 +1,61 @@
+import { useEffect } from "react";
+import axios from "axios";
 import { useEditor } from "../../../context/EditorContext";
+import { useImage } from "../../../context/ImageContext";
 
 function BlurBackgroundToggle() {
-  const { isBlurBackgroundEnabled, setIsBlurBackgroundEnabled } = useEditor();
+  const {
+    isBlurBackgroundEnabled,
+    setIsBlurBackgroundEnabled,
+    blurAmount,
+    setEditedImageURL,
+  } = useEditor();
+  const { imageFile } = useImage();
+
+  // Handle toggle and API call
+  useEffect(() => {
+    if (!imageFile) return;
+
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("blur_strength", blurAmount);
+
+    const applyBlur = async () => {
+      try {
+        console.log("Applying blur with values:");
+        console.log("Image file:", imageFile);
+        console.log("Blur amount:", blurAmount);
+
+        const response = await axios.post(
+          "http://localhost/BACKGROUNDREMOVE/Backend/Index.php?action=blur-background-level",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("Response from server:", response.data);
+        setEditedImageURL(response.data.data.imageUrl);
+      } catch (error) {
+        console.error("Failed to apply blur:", error);
+        if (error.response) {
+          console.error("Response data:", error.response.data);
+        }
+      }
+    };
+
+    const revertToOriginal = () => {
+      const originalURL = URL.createObjectURL(imageFile);
+      setEditedImageURL(originalURL);
+    };
+
+    if (isBlurBackgroundEnabled) {
+      applyBlur();
+    } else {
+      revertToOriginal();
+    }
+  }, [isBlurBackgroundEnabled, blurAmount, imageFile, setEditedImageURL]);
 
   return (
     <div className="flex items-center justify-between">

@@ -9,7 +9,8 @@ function BlurAmountSlider() {
       <input
         type="range"
         min="0"
-        max="20"
+        max="100"
+        step="10"
         value={blurAmount}
         onChange={(e) => setBlurAmount(Number(e.target.value))}
         className="w-full cursor-pointer"

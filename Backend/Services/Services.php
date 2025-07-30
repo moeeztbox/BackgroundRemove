@@ -87,6 +87,50 @@ function processWithGD($file, callable $effectCallback) {
     sendSuccessImageResponse($info['uniqueName']);
     exit;
 }
+function processWithPythonBlur($file) {
+    $info = prepareImagePathsAndMove($file);
+
+    $pythonScriptPath = __DIR__ . '/../Python/blur_image.py';
+    $inputPath = escapeshellarg($info['originalPath']);
+    $outputPath = escapeshellarg($info['processedPath']);
+
+    $command = "python $pythonScriptPath $inputPath $outputPath 2>&1";
+    $output = shell_exec($command);
+
+    if (!file_exists($info['processedPath'])) {
+        Response::error("Image blur failed. Python output: $output", 500);
+    }
+
+    sendSuccessImageResponse($info['uniqueName']);
+    exit;
+}
+function processWithPythonBlurBackgroundLevel($file, $blurStrength) {
+   $info = prepareImagePathsAndMove($file);
+
+// Force output path to .png
+$processedPath = str_replace('.jpg', '.png', $info['processedPath']);
+$processedPath = str_replace('.jpeg', '.png', $processedPath);
+
+$pythonScriptPath = __DIR__ . '/../Python/blur_background_only.py';
+$inputPath = escapeshellarg($info['originalPath']);
+$outputPath = escapeshellarg($processedPath);
+$strength = escapeshellarg($blurStrength + 1);
+
+$command = "python $pythonScriptPath $inputPath $outputPath $strength 2>&1";
+$output = shell_exec($command);
+
+if (!file_exists($processedPath)) {
+    Response::error("Background blur failed. Python output: $output", 500);
+}
+
+// Important: replace $info['processedPath'] with updated $processedPath
+$info['processedPath'] = $processedPath;
+sendSuccessImageResponse(basename($processedPath));
+
+    exit;
+}
+
+
 function processWithPythonBGRemoval($file) {
     $info = prepareImagePathsAndMove($file);
 
@@ -123,6 +167,27 @@ function processWithPythonBackgroundColor($file, $hexColor) {
     sendSuccessImageResponse($info['uniqueName']);
     exit;
 }
+function processWithPythonBackgroundPhoto($fgFile, $bgFile) {
+    // Move and get paths
+    $fgInfo = prepareImagePathsAndMove($fgFile);
+    $bgInfo = prepareImagePathsAndMove($bgFile);
+
+    $pythonScriptPath = __DIR__ . '/../Python/replace_bg_with_photo.py';
+    $inputFG = escapeshellarg($fgInfo['originalPath']);
+    $inputBG = escapeshellarg($bgInfo['originalPath']);
+    $output = escapeshellarg($fgInfo['processedPath']);
+
+    $command = "python $pythonScriptPath $inputFG $inputBG $output 2>&1";
+    $result = shell_exec($command);
+
+    if (!file_exists($fgInfo['processedPath'])) {
+        Response::error("Background photo replacement failed. Python output: $result", 500);
+    }
+
+    sendSuccessImageResponse($fgInfo['uniqueName']);
+    exit;
+}
+
 
 
 
