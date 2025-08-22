@@ -7,7 +7,7 @@ class AppConfig
         header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
         header("Access-Control-Allow-Headers: Content-Type");
 
-        error_reporting(E_ALL);
+        error_reporting(E_ALL & ~E_WARNING);
         ini_set('display_errors', 1);
     }
     public static function getBaseURL() {
@@ -20,7 +20,7 @@ class AppConfig
     return [
         'allowed_types'   => ['image/jpeg', 'image/png', 'image/webp'],
         'max_size'        => 5 * 1024 * 1024, // 5 MB
-        'min_size'        => 5 * 1024,        // 5 KB
+        'min_size'        => 1 * 1024,        // 5 KB
         'upload_path'     => "$baseDir/Uploads/OriginalImage",
         'processed_path'  => "$baseDir/Uploads/ProcessedImage"
     ];

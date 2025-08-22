@@ -1,16 +1,23 @@
-import { useState } from "react";
 import axios from "axios";
 import { useImage } from "../../../context/ImageContext";
 import { useEditor } from "../../../context/EditorContext";
 
 function RemoveBackgroundToggle() {
-  const [enabled, setEnabled] = useState(false);
   const { imageFile } = useImage();
-  const { setEditedImageURL } = useEditor();
+  const {
+    setEditedImageURL,
+    getEditedImageFile,
+    isRemoveBackgroundEnabled,
+    setIsRemoveBackgroundEnabled,
+    setIsProcessing, // ✅ loader state
+    setFinalImage, // ✅ always update final image
+  } = useEditor();
 
   const applyBackgroundRemoval = async () => {
+    setIsProcessing(true); // show loader
     const formData = new FormData();
-    formData.append("image", imageFile);
+    const imageToSend = await getEditedImageFile();
+    formData.append("image", imageToSend);
 
     try {
       const response = await axios.post(
@@ -24,23 +31,31 @@ function RemoveBackgroundToggle() {
       );
 
       const removedBgURL = response.data.data.imageUrl;
+
+      // ✅ Update preview + final state
       setEditedImageURL(removedBgURL);
+      setFinalImage(removedBgURL);
     } catch (error) {
       console.error("Background removal failed:", error);
       alert("Error removing background");
+    } finally {
+      setIsProcessing(false); // hide loader
     }
   };
 
   const restoreOriginalImage = () => {
     if (imageFile) {
       const originalURL = URL.createObjectURL(imageFile);
+
+      // ✅ Reset preview + final state
       setEditedImageURL(originalURL);
+      setFinalImage(originalURL);
     }
   };
 
   const handleToggle = () => {
-    const newState = !enabled;
-    setEnabled(newState);
+    const newState = !isRemoveBackgroundEnabled;
+    setIsRemoveBackgroundEnabled(newState);
 
     if (newState) {
       applyBackgroundRemoval();
@@ -55,12 +70,12 @@ function RemoveBackgroundToggle() {
       <button
         onClick={handleToggle}
         className={`relative cursor-pointer inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none ${
-          enabled ? "bg-blue-600" : "bg-gray-300"
+          isRemoveBackgroundEnabled ? "bg-blue-600" : "bg-gray-300"
         }`}
       >
         <span
           className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
-            enabled ? "translate-x-6" : "translate-x-1"
+            isRemoveBackgroundEnabled ? "translate-x-6" : "translate-x-1"
           }`}
         />
       </button>

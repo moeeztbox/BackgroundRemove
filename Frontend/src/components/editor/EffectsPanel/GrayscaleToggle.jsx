@@ -1,29 +1,70 @@
-import { useState } from "react";
 import axios from "axios";
-import { useImage } from "../../../context/ImageContext";
 import { useEditor } from "../../../context/EditorContext";
+import { useImage } from "../../../context/ImageContext";
 
 function GrayscaleToggle() {
-  const [enabled, setEnabled] = useState(false);
-  const { imageFile } = useImage();
-  const { setEditedImageURL } = useEditor();
+  const {
+    setEditedImageURL,
+    getEditedImageFile,
+    isGrayScaleEnabled,
+    setIsGrayScaleEnabled,
+    color,
+    photo,
+    hello,
+    setHello,
+    setColor,
+    setPhoto,
+    setFinalImage, // ✅ NEW
+  } = useEditor();
+
+  const { imageFile, imageMeta } = useImage();
+
+  const convertURLToFile = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], imageMeta.name || "image", {
+      type: imageMeta.type || blob.type,
+    });
+  };
 
   const applyGrayscale = async () => {
-    const formData = new FormData();
-    formData.append("image", imageFile);
-
     try {
+      const formData = new FormData();
+      let imageToSend;
+
+      if (hello) {
+        imageToSend = await convertURLToFile(hello);
+      } else if (color) {
+        imageToSend = await convertURLToFile(color);
+      } else if (photo) {
+        imageToSend = await convertURLToFile(photo);
+      } else {
+        imageToSend = await getEditedImageFile();
+      }
+
+      formData.append("image", imageToSend);
       const response = await axios.post(
         "http://localhost/BACKGROUNDREMOVE/Backend/Index.php?action=grayscale",
         formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
+
       const grayscaleURL = response.data.data.imageUrl;
-      setEditedImageURL(grayscaleURL);
+      console.log("Grayscale URL:", grayscaleURL);
+
+      // ✅ Update all your local states
+      if (hello) {
+        setHello(grayscaleURL);
+      } else if (color || photo) {
+        setHello(grayscaleURL);
+        setColor(null);
+        setPhoto(null);
+      } else {
+        setEditedImageURL(grayscaleURL);
+      }
+
+      // ✅ Always update final image
+      setFinalImage(grayscaleURL);
     } catch (error) {
       console.error("Grayscale failed:", error);
       alert("Error applying grayscale");
@@ -34,12 +75,13 @@ function GrayscaleToggle() {
     if (imageFile) {
       const originalURL = URL.createObjectURL(imageFile);
       setEditedImageURL(originalURL);
+      setFinalImage(originalURL); // ✅ reset final image to original
     }
   };
 
   const handleToggle = () => {
-    const newState = !enabled;
-    setEnabled(newState);
+    const newState = !isGrayScaleEnabled;
+    setIsGrayScaleEnabled(newState);
 
     if (newState) {
       applyGrayscale();
@@ -54,12 +96,12 @@ function GrayscaleToggle() {
       <button
         onClick={handleToggle}
         className={`relative cursor-pointer inline-flex items-center h-6 w-11 rounded-full transition-colors focus:outline-none ${
-          enabled ? "bg-blue-600" : "bg-gray-300"
+          isGrayScaleEnabled ? "bg-blue-600" : "bg-gray-300"
         }`}
       >
         <span
           className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform ${
-            enabled ? "translate-x-6" : "translate-x-1"
+            isGrayScaleEnabled ? "translate-x-6" : "translate-x-1"
           }`}
         />
       </button>

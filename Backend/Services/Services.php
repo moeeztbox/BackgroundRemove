@@ -71,6 +71,22 @@ function sendSuccessImageResponse($uniqueName) {
 }
 
 // ✅ CLEANED: GD-based processing wrapper
+// function processWithGD($file, callable $effectCallback) {
+//     $info = prepareImagePathsAndMove($file);
+//     $img = loadImageFromPath($info['originalPath']);
+
+//     if (!$img) {
+//         Response::error('Failed to load image for processing.', 500);
+//     }
+
+//     $effectCallback($img);
+
+//     saveImage($img, $info['processedPath'], $info['mime']);
+//     imagedestroy($img);
+
+//     sendSuccessImageResponse($info['uniqueName']);
+//     exit;
+// }
 function processWithGD($file, callable $effectCallback) {
     $info = prepareImagePathsAndMove($file);
     $img = loadImageFromPath($info['originalPath']);
@@ -79,6 +95,13 @@ function processWithGD($file, callable $effectCallback) {
         Response::error('Failed to load image for processing.', 500);
     }
 
+    // 🛡️ Preserve alpha transparency if PNG
+    if ($info['mime'] === 'image/png') {
+        imagealphablending($img, false);   // allow transparency writing
+        imagesavealpha($img, true);        // keep alpha on save
+    }
+
+    // 🎨 Apply effect (e.g., grayscale)
     $effectCallback($img);
 
     saveImage($img, $info['processedPath'], $info['mime']);
@@ -87,6 +110,7 @@ function processWithGD($file, callable $effectCallback) {
     sendSuccessImageResponse($info['uniqueName']);
     exit;
 }
+
 function processWithPythonBlur($file) {
     $info = prepareImagePathsAndMove($file);
 
@@ -131,21 +155,41 @@ sendSuccessImageResponse(basename($processedPath));
 }
 
 
+// function processWithPythonBGRemoval($file) {
+//     $info = prepareImagePathsAndMove($file);
+
+//     $pythonScriptPath = __DIR__ . '/../Python/remove_bg.py';
+//     $inputPath = escapeshellarg($info['originalPath']);
+//     $outputPath = escapeshellarg($info['processedPath']);
+
+//     $command = "python $pythonScriptPath $inputPath $outputPath 2>&1";
+//     $output = shell_exec($command); 
+  
+//     if (!file_exists($info['processedPath'])) {
+//         Response::error("Background removal failed. Python output: $output", 500);
+//     }
+
+//     sendSuccessImageResponse($info['uniqueName']);
+//     exit;
+// }
 function processWithPythonBGRemoval($file) {
     $info = prepareImagePathsAndMove($file);
 
+    // Force PNG extension for transparency support
+    $processedPath = preg_replace('/\.(jpg|jpeg)$/i', '.png', $info['processedPath']);
     $pythonScriptPath = __DIR__ . '/../Python/remove_bg.py';
+
     $inputPath = escapeshellarg($info['originalPath']);
-    $outputPath = escapeshellarg($info['processedPath']);
+    $outputPath = escapeshellarg($processedPath);
 
     $command = "python $pythonScriptPath $inputPath $outputPath 2>&1";
-    $output = shell_exec($command); 
-  
-    if (!file_exists($info['processedPath'])) {
+    $output = shell_exec($command);
+
+    if (!file_exists($processedPath)) {
         Response::error("Background removal failed. Python output: $output", 500);
     }
 
-    sendSuccessImageResponse($info['uniqueName']);
+    sendSuccessImageResponse(basename($processedPath));
     exit;
 }
 

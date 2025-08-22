@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { useImage } from "../../context/ImageContext";
+import { useNavigate } from "react-router-dom"; // ✅ 1. Import
 
 function FileUpload() {
   const { handleImageUpload } = useImage();
   const [isDragging, setIsDragging] = useState(false);
+  const navigate = useNavigate(); // ✅ 2. Hook initialization
 
   const handleChange = (e) => {
     const file = e.target.files[0];
-    if (file) handleImageUpload(file);
+    if (file) {
+      handleImageUpload(file);
+      navigate("/editor"); // ✅ Navigate on successful upload
+    }
   };
 
   const handleDrop = (e) => {
@@ -17,6 +22,7 @@ function FileUpload() {
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
       handleImageUpload(file);
+      navigate("/editor"); // ✅ Navigate on successful drag-drop
     }
   };
 
@@ -40,7 +46,7 @@ function FileUpload() {
           : "border-dashed border-gray-400"
       } rounded-lg p-6 flex items-center justify-center text-center transition-colors`}
     >
-      <label className="cursor-pointer w-full">
+      <label className="cursor-pointer">
         <input
           type="file"
           accept="image/*"
